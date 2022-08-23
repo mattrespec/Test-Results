@@ -1,0 +1,435 @@
+<div>
+	<h1>Elastic Model of Westerly Granite Cylinder Sample Results</h1>
+</div>
+
+<link rel="stylesheet"
+href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/
+css/font-awesome.min.css">
+<script language="javascript">
+  /* Define the Animation class */
+  function Animation(frames, img_id, slider_id, interval, loop_select_id){
+    this.img_id = img_id;
+    this.slider_id = slider_id;
+    this.loop_select_id = loop_select_id;
+    this.interval = interval;
+    this.current_frame = 0;
+    this.direction = 0;
+    this.timer = null;
+    this.frames = new Array(frames.length);
+
+    for (var i=0; i<frames.length; i++)
+    {
+     this.frames[i] = new Image();
+     this.frames[i].src = frames[i];
+    }
+    document.getElementById(this.slider_id).max = this.frames.length - 1;
+    this.set_frame(this.current_frame);
+  }
+
+  Animation.prototype.get_loop_state = function(){
+    var button_group = document[this.loop_select_id].state;
+    for (var i = 0; i < button_group.length; i++) {
+        var button = button_group[i];
+        if (button.checked) {
+            return button.value;
+        }
+    }
+    return undefined;
+  }
+
+  Animation.prototype.set_frame = function(frame){
+    this.current_frame = frame;
+    document.getElementById(this.img_id).src =
+            this.frames[this.current_frame].src;
+    document.getElementById(this.slider_id).value = this.current_frame;
+  }
+
+  Animation.prototype.next_frame = function()
+  {
+    this.set_frame(Math.min(this.frames.length - 1, this.current_frame + 1));
+  }
+
+  Animation.prototype.previous_frame = function()
+  {
+    this.set_frame(Math.max(0, this.current_frame - 1));
+  }
+
+  Animation.prototype.first_frame = function()
+  {
+    this.set_frame(0);
+  }
+
+  Animation.prototype.last_frame = function()
+  {
+    this.set_frame(this.frames.length - 1);
+  }
+
+  Animation.prototype.slower = function()
+  {
+    this.interval /= 0.7;
+    if(this.direction > 0){this.play_animation();}
+    else if(this.direction < 0){this.reverse_animation();}
+  }
+
+  Animation.prototype.faster = function()
+  {
+    this.interval *= 0.7;
+    if(this.direction > 0){this.play_animation();}
+    else if(this.direction < 0){this.reverse_animation();}
+  }
+
+  Animation.prototype.anim_step_forward = function()
+  {
+    this.current_frame += 1;
+    if(this.current_frame < this.frames.length){
+      this.set_frame(this.current_frame);
+    }else{
+      var loop_state = this.get_loop_state();
+      if(loop_state == "loop"){
+        this.first_frame();
+      }else if(loop_state == "reflect"){
+        this.last_frame();
+        this.reverse_animation();
+      }else{
+        this.pause_animation();
+        this.last_frame();
+      }
+    }
+  }
+
+  Animation.prototype.anim_step_reverse = function()
+  {
+    this.current_frame -= 1;
+    if(this.current_frame >= 0){
+      this.set_frame(this.current_frame);
+    }else{
+      var loop_state = this.get_loop_state();
+      if(loop_state == "loop"){
+        this.last_frame();
+      }else if(loop_state == "reflect"){
+        this.first_frame();
+        this.play_animation();
+      }else{
+        this.pause_animation();
+        this.first_frame();
+      }
+    }
+  }
+
+  Animation.prototype.pause_animation = function()
+  {
+    this.direction = 0;
+    if (this.timer){
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+  }
+
+  Animation.prototype.play_animation = function()
+  {
+    this.pause_animation();
+    this.direction = 1;
+    var t = this;
+    if (!this.timer) this.timer = setInterval(function() {
+        t.anim_step_forward();
+    }, this.interval);
+  }
+
+  Animation.prototype.reverse_animation = function()
+  {
+    this.pause_animation();
+    this.direction = -1;
+    var t = this;
+    if (!this.timer) this.timer = setInterval(function() {
+        t.anim_step_reverse();
+    }, this.interval);
+  }
+</script>
+
+<p style="text-align:justify">
+	The animation below shows a contour plot of temperature through the radius and depth of the cylinder while it is being cooled. The black dots show the location of the acoustic events and the size corresponds to the magnitude of the event.
+	It can be observed that the lead of the acoustic events seems to follow the middle of the light orange band (i.e 0 to 10 &#186C). This shows a correlation between the acoustic events, the temperature front, and thermal stress.
+	Additionally, more acoustic events appear as lower temperature fronts progress through the depth of the sample.
+</p>
+
+<div class="animation" align="center">
+    <img id="_anim_imgd8977349180d4e52801ade74dd77019c">	
+	<img src="Imgs/templeg.png" width="210" height="505" vertical-align: middle>
+	<br>
+    <input id="_anim_sliderd8977349180d4e52801ade74dd77019c" type="range" style="width:350px"
+           name="points" min="0" max="1" step="1" value="0"
+           onchange="animd8977349180d4e52801ade74dd77019c.set_frame(parseInt(this.value));"></input>
+    <br>
+    <button onclick="animd8977349180d4e52801ade74dd77019c.slower()"><i class="fa fa-minus"></i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019c.first_frame()"><i class="fa fa-fast-backward">
+        </i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019c.previous_frame()">
+        <i class="fa fa-step-backward"></i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019c.reverse_animation()">
+        <i class="fa fa-play fa-flip-horizontal"></i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019c.pause_animation()"><i class="fa fa-pause">
+        </i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019c.play_animation()"><i class="fa fa-play"></i>
+        </button>
+    <button onclick="animd8977349180d4e52801ade74dd77019c.next_frame()"><i class="fa fa-step-forward">
+        </i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019c.last_frame()"><i class="fa fa-fast-forward">
+        </i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019c.faster()"><i class="fa fa-plus"></i></button>
+  <form action="#n" name="_anim_loop_selectd8977349180d4e52801ade74dd77019c" class="anim_control">
+    <input type="radio" name="state"
+           value="once" > Once </input>
+    <input type="radio" name="state"
+           value="loop" > Loop </input>
+    <input type="radio" name="state"
+           value="reflect" checked> Reflect </input>
+  </form>
+  <h3 style="text-align:center">Figure 1</h3>
+</div>
+
+<script language="javascript">
+  /* Instantiate the Animation class. */
+  /* The IDs given should match those used in the template above. */
+  (function() {
+    var img_id = "_anim_imgd8977349180d4e52801ade74dd77019c";
+    var slider_id = "_anim_sliderd8977349180d4e52801ade74dd77019c";
+    var loop_select_id = "_anim_loop_selectd8977349180d4e52801ade74dd77019c";
+    var frames = new Array(41);
+    
+  for (var i=0; i<41; i++){
+	k=i*5
+    frames[i] = "Imgs/Tcont_Imgs/" + ("0000000" + k).slice(-5) +
+                ".png";
+  }
+
+    /* set a timeout to make sure all the above elements are created before
+       the object is initialized. */
+    setTimeout(function() {
+        animd8977349180d4e52801ade74dd77019c = new Animation(frames, img_id, slider_id, 200.0,
+                                 loop_select_id);
+    }, 0);
+  })()
+</script>
+
+<h3 style="text-align:left">Maxmimum and Minimum Principal Stresses of Acoustic Events </h3>
+<p style="text-align:justify">
+	The animation below shows the distribution of acoustic events in the maximum (&sigma;<sub>1</sub>) vs minimum (&sigma;<sub>3</sub>) principal stress space. The size of the red dots corresponds to the magnitude of the acoustic event.
+	CLICK [+] TO INCREASE THE SPEED OF THE ANIMATION.
+</p>
+
+<div class="animation" align="center">
+    <img id="_anim_imgd8977349180d4e52801ade74dd77019d">
+	<br>
+    <input id="_anim_sliderd8977349180d4e52801ade74dd77019d" type="range" style="width:350px"
+           name="points" min="0" max="1" step="1" value="0"
+           onchange="animd8977349180d4e52801ade74dd77019d.set_frame(parseInt(this.value));"></input>
+    <br>
+    <button onclick="animd8977349180d4e52801ade74dd77019d.slower()"><i class="fa fa-minus"></i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019d.first_frame()"><i class="fa fa-fast-backward">
+        </i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019d.previous_frame()">
+        <i class="fa fa-step-backward"></i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019d.reverse_animation()">
+        <i class="fa fa-play fa-flip-horizontal"></i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019d.pause_animation()"><i class="fa fa-pause">
+        </i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019d.play_animation()"><i class="fa fa-play"></i>
+        </button>
+    <button onclick="animd8977349180d4e52801ade74dd77019d.next_frame()"><i class="fa fa-step-forward">
+        </i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019d.last_frame()"><i class="fa fa-fast-forward">
+        </i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019d.faster()"><i class="fa fa-plus"></i></button>
+  <form action="#n" name="_anim_loop_selectd8977349180d4e52801ade74dd77019d" class="anim_control">
+    <input type="radio" name="state"
+           value="once" > Once </input>
+    <input type="radio" name="state"
+           value="loop" checked> Loop </input>
+    <input type="radio" name="state"
+           value="reflect" > Reflect </input>
+  </form>
+</div>
+
+<script language="javascript">
+  /* Instantiate the Animation class. */
+  /* The IDs given should match those used in the template above. */
+  (function() {
+    var img_id = "_anim_imgd8977349180d4e52801ade74dd77019d";
+    var slider_id = "_anim_sliderd8977349180d4e52801ade74dd77019d";
+    var loop_select_id = "_anim_loop_selectd8977349180d4e52801ade74dd77019d";
+    var frames = new Array(1277);
+    
+  for (var i=0; i<1277; i++){
+    frames[i] = "Imgs/s1v3_frames/frame" + ("0000000" + i).slice(-7) +
+                ".png";
+  }
+
+
+    /* set a timeout to make sure all the above elements are created before
+       the object is initialized. */
+    setTimeout(function() {
+        animd8977349180d4e52801ade74dd77019d = new Animation(frames, img_id, slider_id, 200.0,
+                                 loop_select_id);
+    }, 0);
+  })()
+</script>
+
+<h3 style="text-align:center">Figure 2</h3>
+
+<p style="text-align:justify">
+	The images below, show all possible combinations of maximum and minimum principal stresses experienced by the sample in the test up to 200s as the shaded grey area. The darker the shading of grey, the more frequently the stress combination occured.
+	The colored points show the stress combination at the location of acoustic events through the whole sample up to 200s in the test time. The color of the points indicates the contour of 3a) the depth of the acoustic events and 3b) the time in the test when the acoustic event occured.
+	Figure 3a confirms our suspicions of the groupings of acoustic events. Figure 3b shows that after 75s of the test time the acoustic events appear at combinations of increasing minimum and maximum principal stress. This shows that the number of acoustic events increases with the increase in principal stresses.
+	Unfortunately a clear path from position in the possible stress combinations through time does not appear, but it is interesting to see how the much of the acoustic events where the maximum principal stress is close to zero occurs between 75s and 125s. This might suggest that the acoustic events could be filtered to observe only the events when the maximum princpal stress is close to zero for a failure criterion.
+</p>
+
+<p style="text-align:center">
+	<b> a) </b> <img src="Imgs/S1vsS3vsDepth.png"> <b> b) </b> <img src="Imgs/S1vsS3vsTime.png">
+	<h3 style="text-align:center">Figure 3</h3>
+</p>
+
+<h3 style="text-align:left">Histograms of Acoustic Events </h3>
+
+<p style="text-align:justify">
+	The animation below shows the distribution of temperature at the location of acoustic events up to 200s of the test and only in the top half of the sample to only observe the acoustic events created from thermal stress instead of mechanical stress, which occurs in the bottom of the sample.
+	It is interesting to see how the acoustic events appear through time as the temperature at the location of the events decreases. As the temperature of the sample continues to decrease, the number of acoustic events in places where the sample is at a higher temperature continues to increase also. 
+	This shows a definite correlation between thermal stress and acoustic events. CLICK [+] TO INCREASE THE SPEED OF THE ANIMATION.
+</p>
+
+<div class="animation" align="center">
+    <img id="_anim_imgd8977349180d4e52801ade74dd77019b">
+	<br>
+    <input id="_anim_sliderd8977349180d4e52801ade74dd77019b" type="range" style="width:350px"
+           name="points" min="0" max="1" step="1" value="0"
+           onchange="animd8977349180d4e52801ade74dd77019b.set_frame(parseInt(this.value));"></input>
+    <br>
+    <button onclick="animd8977349180d4e52801ade74dd77019b.slower()"><i class="fa fa-minus"></i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019b.first_frame()"><i class="fa fa-fast-backward">
+        </i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019b.previous_frame()">
+        <i class="fa fa-step-backward"></i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019b.reverse_animation()">
+        <i class="fa fa-play fa-flip-horizontal"></i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019b.pause_animation()"><i class="fa fa-pause">
+        </i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019b.play_animation()"><i class="fa fa-play"></i>
+        </button>
+    <button onclick="animd8977349180d4e52801ade74dd77019b.next_frame()"><i class="fa fa-step-forward">
+        </i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019b.last_frame()"><i class="fa fa-fast-forward">
+        </i></button>
+    <button onclick="animd8977349180d4e52801ade74dd77019b.faster()"><i class="fa fa-plus"></i></button>
+  <form action="#n" name="_anim_loop_selectd8977349180d4e52801ade74dd77019b" class="anim_control">
+    <input type="radio" name="state"
+           value="once" > Once </input>
+    <input type="radio" name="state"
+           value="loop" checked> Loop </input>
+    <input type="radio" name="state"
+           value="reflect" > Reflect </input>
+  </form>
+</div>
+
+<script language="javascript">
+  /* Instantiate the Animation class. */
+  /* The IDs given should match those used in the template above. */
+  (function() {
+    var img_id = "_anim_imgd8977349180d4e52801ade74dd77019b";
+    var slider_id = "_anim_sliderd8977349180d4e52801ade74dd77019b";
+    var loop_select_id = "_anim_loop_selectd8977349180d4e52801ade74dd77019b";
+    var frames = new Array(786);
+    
+  for (var i=0; i<786; i++){
+    frames[i] = "Imgs/TempHisto_frames/frame" + ("0000000" + i).slice(-7) +
+                ".png";
+  }
+
+
+    /* set a timeout to make sure all the above elements are created before
+       the object is initialized. */
+    setTimeout(function() {
+        animd8977349180d4e52801ade74dd77019b = new Animation(frames, img_id, slider_id, 200.0,
+                                 loop_select_id);
+    }, 0);
+  })()
+</script>
+
+ <h3 style="text-align:center">Figure 4</h3>
+
+<p style="text-align:justify">
+	The animation below shows the distribution of minimum principal stress at the location of acoustic events up to 200s of the test and only in the top half of the sample to only observe the acoustic events created from thermal stress instead of mechanical stress, which occurs in the bottom of the sample.
+	The animation below shows that at the start of the test, the acoustic events appear at all of the possible minimum principal stress states approximately equally. However at 120 s, acoustic events appear rapidly at values between -3 MPa and 0 MPa. 
+	There is also a rise in acoustic events at a minimum principal stress of -7 MPa that starts at the same time. It is likely that there is a way to correlate the stress conditions in the sample where the minimum principal stress is between -3 MPa and 0 MPa to the number of acoustic events and rate of acoustic events.
+	Establishing a relationship between the thermal stress and appearance of acoustic events is essential to predict in-situ stress from acoustic events. Unfortunately, a relationship between thermal stress and acoustic events is not obvious at this point.
+	CLICK [+] TO INCREASE THE SPEED OF THE ANIMATION.
+</p>
+
+<div class="animation" align="center">
+    <img id="_anim_img11c861a14cfa47caa3d1e43286eff430">
+    <br>
+    <input id="_anim_slider11c861a14cfa47caa3d1e43286eff430" type="range" style="width:350px"
+           name="points" min="0" max="1" step="1" value="0"
+           onchange="anim11c861a14cfa47caa3d1e43286eff430.set_frame(parseInt(this.value));"></input>
+    <br>
+    <button onclick="anim11c861a14cfa47caa3d1e43286eff430.slower()"><i class="fa fa-minus"></i></button>
+    <button onclick="anim11c861a14cfa47caa3d1e43286eff430.first_frame()"><i class="fa fa-fast-backward">
+        </i></button>
+    <button onclick="anim11c861a14cfa47caa3d1e43286eff430.previous_frame()">
+        <i class="fa fa-step-backward"></i></button>
+    <button onclick="anim11c861a14cfa47caa3d1e43286eff430.reverse_animation()">
+        <i class="fa fa-play fa-flip-horizontal"></i></button>
+    <button onclick="anim11c861a14cfa47caa3d1e43286eff430.pause_animation()"><i class="fa fa-pause">
+        </i></button>
+    <button onclick="anim11c861a14cfa47caa3d1e43286eff430.play_animation()"><i class="fa fa-play"></i>
+        </button>
+    <button onclick="anim11c861a14cfa47caa3d1e43286eff430.next_frame()"><i class="fa fa-step-forward">
+        </i></button>
+    <button onclick="anim11c861a14cfa47caa3d1e43286eff430.last_frame()"><i class="fa fa-fast-forward">
+        </i></button>
+    <button onclick="anim11c861a14cfa47caa3d1e43286eff430.faster()"><i class="fa fa-plus"></i></button>
+  <form action="#n" name="_anim_loop_select11c861a14cfa47caa3d1e43286eff430" class="anim_control">
+    <input type="radio" name="state"
+           value="once" > Once </input>
+    <input type="radio" name="state"
+           value="loop" checked> Loop </input>
+    <input type="radio" name="state"
+           value="reflect" > Reflect </input>
+  </form>
+</div>
+
+<script language="javascript">
+  /* Instantiate the Animation class. */
+  /* The IDs given should match those used in the template above. */
+  (function() {
+    var img_id = "_anim_img11c861a14cfa47caa3d1e43286eff430";
+    var slider_id = "_anim_slider11c861a14cfa47caa3d1e43286eff430";
+    var loop_select_id = "_anim_loop_select11c861a14cfa47caa3d1e43286eff430";
+    var frames = new Array(786);
+    
+  for (var i=0; i<786; i++){
+    frames[i] = "Imgs/PSHisto_frames/frame" + ("0000000" + i).slice(-7) +
+                ".png";
+  }
+
+
+    /* set a timeout to make sure all the above elements are created before
+       the object is initialized. */
+    setTimeout(function() {
+        anim11c861a14cfa47caa3d1e43286eff430 = new Animation(frames, img_id, slider_id, 200.0,
+                                 loop_select_id);
+    }, 0);
+  })()
+</script>
+
+<h3 style="text-align:center">Figure 5</h3>
+
+
+<script language="javascript">
+  /* Instantiate the Animation class. */
+  /* The IDs given should match those used in the template above. */
+  (function() {
+    var k = 1;
+    
+    }, 0);
+  })()
+</script>
+
